@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Ini Kasir</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+
+<div class="cash-register">
+  <div class="cash-register__total-wrap">
+    <div class="cash-register__total">
+      <div class="cash-register__loop">
+        <div class="cash-register__loop-track" v-bind:style="{'--trans': lines % 10}"><sup>0</sup><sup>1</sup><sup>2</sup><sup>3</sup><sup>4</sup><sup>5</sup><sup>6</sup><sup>7</sup><sup>8</sup><sup>9</sup>
+        </div>
+      </div>
+      <div class="cash-register__loop">$</div>
+      <div class="cash-register__loop">
+        <div class="cash-register__loop-track" v-bind:style="{'--trans': amount[0]}">
+          <div>0</div>
+          <div>1</div>
+          <div>2</div>
+          <div>3</div>
+          <div>4</div>
+          <div>5</div>
+          <div>6</div>
+          <div>7</div>
+          <div>8</div>
+          <div>9</div>
+        </div>
+      </div>
+      <div class="cash-register__loop">
+        <div class="cash-register__loop-track" v-bind:style="{'--trans': amount[1]}">
+          <div>0</div>
+          <div>1</div>
+          <div>2</div>
+          <div>3</div>
+          <div>4</div>
+          <div>5</div>
+          <div>6</div>
+          <div>7</div>
+          <div>8</div>
+          <div>9</div>
+        </div>
+      </div>
+      <div class="cash-register__loop">.</div>
+      <div class="cash-register__loop">
+        <div class="cash-register__loop-track" v-bind:style="{'--trans': amount[2]}"><sup>0</sup><sup>1</sup><sup>2</sup><sup>3</sup><sup>4</sup><sup>5</sup><sup>6</sup><sup>7</sup><sup>8</sup><sup>9</sup>
+        </div>
+      </div>
+      <div class="cash-register__loop">
+        <div class="cash-register__loop-track" v-bind:style="{'--trans': amount[3]}"><sup>0</sup><sup>1</sup><sup>2</sup><sup>3</sup><sup>4</sup><sup>5</sup><sup>6</sup><sup>7</sup><sup>8</sup><sup>9</sup>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cash-register__mid">
+    <div class="cash-register__receipt-feed">
+      <div class="cash-register__receipt-container">
+        <ul class="cash-register__receipt" v-bind:style="{'--trans': showLines}">
+          <li class="cash-register__receipt-item" v-for="l in receiptLines" :class="subbing ? 'subby' : 'hello'"></li>
+        </ul>
+      </div>
+    </div>
+    <div class="cash-register__key"></div>
+  </div>
+  <div class="cash-register__keypad-wrap">
+    <div class="cash-register__keypad">
+      <button class="cash-register-key cash-register-key--big-dollar cash-register-key--top" data-amount-index="0" v-on:click="addToLine"></button>
+      <button class="cash-register-key cash-register-key--big-dollar cash-register-key--top" data-amount-index="1" v-on:click="addToLine"></button>
+      <button class="cash-register-key cash-register-key--top" data-amount-index="2" v-on:click="addToLine"></button>
+      <button class="cash-register-key cash-register-key--top" data-amount-index="3" v-on:click="addToLine"></button>
+      <button class="cash-register-key cash-register-key--big-dollar" data-amount-index="0" v-on:click="addToLine"></button>
+      <button class="cash-register-key cash-register-key--big-dollar" data-amount-index="1" v-on:click="addToLine"></button>
+      <button class="cash-register-key" data-amount-index="2" v-on:click="addToLine"></button>
+      <button class="cash-register-key" data-amount-index="3" v-on:click="addToLine"></button>
+      <button class="cash-register-key cash-register-key--big-dollar" data-amount-index="0" v-on:click="addToLine"></button>
+      <button class="cash-register-key cash-register-key--big-dollar" data-amount-index="1" v-on:click="addToLine"></button>
+      <button class="cash-register-key" data-amount-index="2" v-on:click="addToLine"></button>
+      <button class="cash-register-key" data-amount-index="3" v-on:click="addToLine"></button>
+      <div class="cash-register__keypad-spacer"></div>
+      <div class="cash-register__keypad-actions">
+        <button class="cash-register-key cash-register-key--dep" v-on:click="addLine">Add</button>
+        <button class="cash-register-key cash-register-key--sub" v-on:click="addSub">Sub</button>
+        <button class="cash-register-key cash-register-key--tend" v-on:click="tend">Tend</button>
+      </div>
+    </div>
+  </div>
+  <div class="cash-register__drawer" v-bind:class="{'cash-register__drawer--open': tending}">
+    <div class="cash-register__float">
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+      <div class="cash-register__note cash-register__note--float">💵</div>
+    </div>
+    <div class="cash-register__cash">
+      <div class="cash-register__note-wrap" v-for="n in notes" v-bind:style="{'--x': n[0]}">
+        <div class="cash-register__note" v-bind:style="{'--y':n[1], '--rotation': n[2]}">💵</div>
+      </div>
+    </div>
+    <div class="cash-register__drawer-front" v-on:click="tend"></div>
+  </div>
+</div>
+
+</body>
+</html>
